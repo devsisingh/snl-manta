@@ -200,7 +200,8 @@ const GameCard = ({ game }) => {
           provider.getSigner()
         )
   
-        const tx = await contract.joinGame(address, ipfsmetahashnfturl);
+        // const tx = await contract.joinGame(address, ipfsmetahashnfturl);
+        const tx = await contract.joinGame();
         const result = await tx.wait();
         console.log("Result:", result);
         setLoading(false);
