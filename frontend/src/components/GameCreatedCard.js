@@ -13,6 +13,9 @@ import {
     genAddressSeed,
     getZkLoginSignature,
   } from "@mysten/zklogin";
+import { abi } from "./abi/abi";
+import { ethers } from 'ethers';
+import { useAddress } from "@thirdweb-dev/react";
 
 const GameCard = ({ game }) => {
   const starttime = game.startTimestamp;
@@ -21,6 +24,8 @@ const GameCard = ({ game }) => {
   const [ipfsdata, setIpfsData] = useState(null);
   const [creategamedone, setcreategamedone] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const address = useAddress();
 
   const accountDataKey = 'zklogin-demo.accounts';
   const NETWORK='devnet';
@@ -178,6 +183,36 @@ const GameCard = ({ game }) => {
     } 
   }
 
+
+  const mintgame = async (ipfsmetahashnfturl) => {
+    setLoading(true);
+
+    try {
+
+      if (typeof window !== "undefined" && window.ethereum) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+  
+        // Create a JavaScript object from the Contract ABI, to interact
+        // with the HelloWorld contract.
+        const contract = new ethers.Contract(
+          '0x63AD84852b933a55949173C0c1a5BcBE32E2ee8A',
+          abi ,
+          provider.getSigner()
+        )
+  
+        const tx = await contract.joinGame(address, ipfsmetahashnfturl);
+        const result = await tx.wait();
+        console.log("Result:", result);
+        setLoading(false);
+        setcreategamedone(true);
+      }
+
+    } catch (error) {
+      console.error("Error handling draw card and fetching reading:", error);
+      setLoading(false); // Set loading state to false in case of error
+    }
+  };
+
   return (
       <div className="border text-black rounded-2xl mt-10 h-full" style={{backgroundColor:'#CAF4FF'}}>
         <div className="w-full">
@@ -217,8 +252,13 @@ const GameCard = ({ game }) => {
               height="100"
             />)}
           </div>
-          <button className="rounded-lg px-4 py-2 m-2 text-white" style={{backgroundColor:'#232C12'}}
+          {/* <button className="rounded-lg px-4 py-2 m-2 text-white" style={{backgroundColor:'#232C12'}}
           onClick={()=>{sendTransaction(accounts.current[0], game?.url)}}
+          >
+            Mint Game
+            </button> */}
+            <button className="rounded-lg px-4 py-2 m-2 text-white" style={{backgroundColor:'#232C12'}}
+          onClick={()=>{mintgame(game?.url)}}
           >
             Mint Game
             </button>

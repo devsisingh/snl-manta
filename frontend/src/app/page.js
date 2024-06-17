@@ -9,7 +9,7 @@ import { Zoom } from 'react-reveal';
 import { useInView } from 'react-intersection-observer';
 import { useAnimation, motion } from 'framer-motion';
 import useFonts from "@/components/hooks/useFonts";
-
+import { useAddress} from "@thirdweb-dev/react";
 
 
 
@@ -26,6 +26,8 @@ export default function Home() {
   const animation = useAnimation();
   const animation2 = useAnimation();
   const animation3 = useAnimation();
+
+  const address = useAddress();
 
   
   
@@ -87,8 +89,8 @@ export default function Home() {
 
   // console.log('sarvesh',accounts.current[0])
   useEffect(() => {
-    setIsAccountDataAvailable(!!userAddr); // Update state based on the presence of userAddr
-  }, [userAddr]);
+    setIsAccountDataAvailable(address); // Update state based on the presence of userAddr
+  }, [address]);
 
   const handleExploreClick = () => {
     if (!isAccountDataAvailable) {
